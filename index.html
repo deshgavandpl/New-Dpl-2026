@@ -19,6 +19,7 @@
                 <h1>DPL <span>2026</span></h1>
             </div>
             <ul class="nav-links">
+                <li><a href="https://sites.google.com/view/dpl2026/home" style="color: var(--accent-hover); font-weight: 700;">DPL मराठी</a></li>
                 <li><a href="#home">Home</a></li>
                 <li><a href="#teams">Teams</a></li>
                 <li><a href="#schedule">Schedule</a></li>
@@ -128,14 +129,16 @@
         <!-- Hero Section -->
         <section id="home" class="hero">
             <div class="hero-content">
-                <div class="hero-logo animate-up">
-                    <img src="./dpl_logo.png" alt="DPL 2026 3D Cinematic Logo">
+                <div class="hero-text">
+                    <h1 class="animate-up delay-1">Deshgavhan Premier League</h1>
+                    <p class="tagline animate-up delay-2">Cricket's ultimate battleground. Witness the pride, the passion, and the glory.</p>
+                    <div class="hero-buttons animate-up delay-3">
+                        <button class="btn-primary" onclick="openModal('registerModal')">Join the Battle</button>
+                        <a href="#teams" class="btn-outline">View Teams</a>
+                    </div>
                 </div>
-                <h1 class="animate-up delay-1">Deshgavhan Premier League</h1>
-                <p class="tagline animate-up delay-2">Cricket's ultimate battleground. Witness the pride, the passion, and the glory.</p>
-                <div class="hero-buttons animate-up delay-3">
-                    <button class="btn-primary" onclick="openModal('registerModal')">Join the Battle</button>
-                    <a href="#teams" class="btn-outline">View Teams</a>
+                <div class="hero-logo animate-up delay-1">
+                    <img src="./dpl_logo.png" alt="DPL 2026 3D Cinematic Logo">
                 </div>
             </div>
             <div class="hero-overlay"></div>
@@ -281,7 +284,7 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="accordion-body">
-                            <p>Each match will consist of 12 overs per side. The powerplay will be applied for the first 3 overs where only 2 fielders are allowed outside the 30-yard circle.</p>
+                            <p>Each match will consist of 6 overs per side. The powerplay will be applied for the first 2 overs where only 2 fielders are allowed outside the 30-yard circle.</p>
                         </div>
                     </div>
                     <div class="accordion-item">
@@ -290,7 +293,7 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="accordion-body">
-                            <p>Players must be officially registered on this portal before the deadline. Non-registered players are strictly prohibited from participating in any official DPL match.</p>
+                            <p>All players must be officially registered on this portal before the deadline and must be a domicile of Deshgavhan. Non-registered players will not be allowed to participate in any official DPL match.</p>
                         </div>
                     </div>
                     <div class="accordion-item">
@@ -365,7 +368,10 @@
                     </div>
                 </div>
                 <div class="copyright">
-                    <p>&copy; 2026 Deshgavhan Premier League. All rights reserved.</p>
+                    <div class="ar-logo-container">
+                        <img src="./ar_logo.png" alt="AR Story Logo">
+                    </div>
+                    <p>&copy; 2026 Deshgavhan Premier League & ARc. All rights reserved.</p>
                 </div>
             </div>
         </footer>
