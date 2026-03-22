@@ -1,4 +1,4 @@
-// Data Models (Initial mock data for aesthetic)
+ // Data Models (Initial mock data for aesthetic)
 const initialTeams = [
     { id: 'T1', name: 'Cotton 11', shortName: 'CTN11' },
     { id: 'T2', name: 'AP11', shortName: 'AP11' },
