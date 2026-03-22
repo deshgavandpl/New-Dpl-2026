@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPL - Deshgavhan Premier League</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>DPL <span>2026</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#teams">Teams</a></li>
+                <li><a href="#schedule">Schedule</a></li>
+                <li><a href="#points">Points Table</a></li>
+                <li><a href="#tournament">Structure</a></li>
+                <li><a href="#rules">Rules</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-primary" onclick="openModal('registerModal')">Register Now</button>
+                <a href="https://dpl-registration.netlify.app/" class="btn-outline"><i class="fas fa-ticket-alt"></i> Pass</a>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Modals -->
+    <!-- Registration Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('registerModal')">&times;</span>
+            <h2>Player Registration</h2>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" required>
+                </div>
+                <div class="form-group">
+                    <label>Village/City</label>
+                    <input type="text" id="regVillage" required>
+                </div>
+                <div class="form-group">
+                    <label>Playing Role</label>
+                    <select id="regRole" required>
+                        <option value="">Select Role</option>
+                        <option value="Batsman">Batsman</option>
+                        <option value="Bowler">Bowler</option>
+                        <option value="All-Rounder">All-Rounder</option>
+                        <option value="Wicket-Keeper">Wicket-Keeper</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="regMobile" pattern="[0-9]{10}" required placeholder="10-digit number">
+                </div>
+                <button type="submit" class="btn-primary full-width">Submit Registration</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div id="successModal" class="modal">
+        <div class="modal-content text-center">
+            <span class="close-btn" onclick="closeModal('successModal')">&times;</span>
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h2>Registration Successful!</h2>
+            <p>Welcome to DPL 2026. Here is your official Player Card.</p>
+            
+            <div class="player-card preview-card" id="previewCard">
+                <!-- Injected via JS -->
+            </div>
+            
+            <button class="btn-primary mt-20" onclick="closeModal('successModal')">Awesome!</button>
+        </div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content admin-modal">
+            <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
+            <h2>Admin Dashboard</h2>
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('players')">Registered Players</button>
+                <button class="admin-tab" onclick="switchAdminTab('teams')">Manage Teams</button>
+            </div>
+            
+            <div id="admin-players" class="admin-section active">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Village</th>
+                                <th>Role</th>
+                                <th>Mobile</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminPlayerList">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="admin-teams" class="admin-section">
+                <p>Team management coming soon...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <div class="hero-logo animate-up">
+                    <img src="./assets/dpl_logo.png" alt="DPL 2026 3D Cinematic Logo">
+                </div>
+                <h1 class="animate-up delay-1">Deshgavhan Premier League</h1>
+                <p class="tagline animate-up delay-2">Cricket's ultimate battleground. Witness the pride, the passion, and the glory.</p>
+                <div class="hero-buttons animate-up delay-3">
+                    <button class="btn-primary" onclick="openModal('registerModal')">Join the Battle</button>
+                    <a href="#teams" class="btn-outline">View Teams</a>
+                </div>
+            </div>
+            <div class="hero-overlay"></div>
+        </section>
+
+        <!-- About Stats Section -->
+        <section id="about" class="about section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <h2>About DPL 2026</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="about-grid">
+                    <div class="about-text animate-up">
+                        <p>The Deshgavhan Premier League represents the pinnacle of local cricket talent. Established to foster community spirit and sporting excellence, DPL 2026 brings together the finest athletes to compete for the prestigious golden trophy.</p>
+                    </div>
+                    <div class="stats-container animate-up delay-1">
+                        <div class="stat-box">
+                            <i class="fas fa-users icon"></i>
+                            <h3 class="counter" id="playersCount">0</h3>
+                            <p>Registered</p>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-shield-alt icon"></i>
+                            <h3 class="counter">4</h3>
+                            <p>Teams</p>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-trophy icon"></i>
+                            <h3 class="counter">14</h3>
+                            <p>Matches</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teams Section -->
+        <section id="teams" class="teams section-padding bg-alt">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Participating Teams</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="teams-grid animate-up" id="teamsContainer">
+                    <!-- JS Injected Team Cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tournament Structure (Timeline) -->
+        <section id="tournament" class="tournament section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Tournament Structure</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="timeline animate-up">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div class="timeline-content">
+                            <h3>Player Registration</h3>
+                            <p>Open talent hunt and form submission across all eligible villages.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fas fa-gavel"></i></div>
+                        <div class="timeline-content">
+                            <h3>Mega Auction</h3>
+                            <p>Franchise owners bid for players to build their ultimate squads.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fas fa-play"></i></div>
+                        <div class="timeline-content">
+                            <h3>League Stage</h3>
+                            <p>Round-robin format ensuring every team plays against each other.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><i class="fas fa-crown"></i></div>
+                        <div class="timeline-content">
+                            <h3>Playoffs & Final</h3>
+                            <p>The top 4 teams battle it out for the ultimate DPL Crown.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section id="schedule" class="schedule section-padding bg-alt">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Match Schedule</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="schedule-grid animate-up" id="scheduleContainer">
+                    <!-- JS Injected Schedule Cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Points Table Section -->
+        <section id="points" class="points section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Points Table</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="table-responsive glass-panel animate-up">
+                    <table class="points-table">
+                        <thead>
+                            <tr>
+                                <th>Pos</th>
+                                <th>Team</th>
+                                <th>P</th>
+                                <th>W</th>
+                                <th>L</th>
+                                <th>Pts</th>
+                                <th>NRR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pointsTableBody">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rules Section (Accordion) -->
+        <section id="rules" class="rules section-padding bg-alt">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Tournament Rules</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="accordion animate-up">
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>Match Format</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Each match will consist of 12 overs per side. The powerplay will be applied for the first 3 overs where only 2 fielders are allowed outside the 30-yard circle.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>Player Eligibility</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Players must be officially registered on this portal before the deadline. Non-registered players are strictly prohibited from participating in any official DPL match.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h3>Umpire Decision</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <p>The on-field umpire's decision is final and binding. Any aggressive dissent towards umpires will result in immediate penalty runs and potential player suspension.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="gallery section-padding">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Gallery</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="gallery-grid animate-up">
+                    <div class="gallery-item">
+                         <img src="./assets/1.jpeg" alt="DPL Gallery Image 1">
+                         <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                         <img src="./assets/2.jpeg" alt="DPL Gallery Image 2">
+                         <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                         <img src="./assets/3.jpeg" alt="DPL Gallery Image 3">
+                         <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                         <img src="./assets/4.jpeg" alt="DPL Gallery Image 4">
+                         <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                         <img src="./assets/5.jpeg" alt="DPL Gallery Image 5">
+                         <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                         <img src="./assets/Winner1.png" alt="DPL Winner">
+                         <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                         <img src="./assets/poster.png" alt="DPL Poster">
+                         <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                         <img src="./assets/map.png" alt="DPL Map">
+                         <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <h2>DPL <span>2026</span></h2>
+                        <p>Our Pride. Our Passion.</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2026 Deshgavhan Premier League. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
