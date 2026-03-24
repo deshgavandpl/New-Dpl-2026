@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPL - Deshgavhan Premier League | Ultra-Competitive</title>
+    <title>DPL Central | Professional Draft & League Operations</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,646 +12,753 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
-    <!-- Chosen Palette: GenZ Solid/Neo-Brutalism (White background, bright accents (Lime, Hot Pink, Cyan), heavy black borders and offset shadows for 3D effect) -->
-    <!-- Application Structure Plan: Expanded SPA Dashboard. Sections: Hero (with Countdown), About/News Ticker, History (Charts), Hall of Fame (Tables), Rules (Cards), Teams (Clickable Modals), Portal (Forms), Gallery (CSS 3D Hover Cards). Designed for max engagement. -->
-    <!-- Visualization & Content Choices: 
-         - Stats Tables: HTML/CSS grids for Leaderboards.
-         - Interactive Modals: JS driven dynamic content injected into the global modal.
-         - Charts: Chart.js for demographics and history trends.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
             overflow-x: hidden;
+            overflow-y: scroll;
         }
 
-        .font-mono {
-            font-family: 'Space Mono', monospace;
-        }
-
-        /* Solid UI / GenZ 3D Effects */
-        .solid-3d {
-            border: 4px solid #000;
-            box-shadow: 8px 8px 0px #000;
-            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border-radius: 1rem;
-            background-color: #fff;
+        /* Clean UI Cards */
+        .clean-card {
+            background-color: #ffffff;
+            border-radius: 1.25rem;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: all 0.3s ease;
         }
         
-        .solid-3d:hover {
-            transform: translate(-4px, -4px);
-            box-shadow: 12px 12px 0px #000;
+        .clean-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+            border-color: #e2e8f0;
         }
 
-        .solid-3d:active {
-            transform: translate(4px, 4px);
-            box-shadow: 4px 4px 0px #000;
-        }
-
+        /* Buttons */
         .btn-primary {
-            background-color: #ccff00; /* Neon Lime */
-            border: 4px solid #000;
-            box-shadow: 6px 6px 0px #000;
-            color: #000;
-            font-weight: 900;
-            text-transform: uppercase;
+            background-color: #2563eb;
+            color: #ffffff;
+            font-weight: 600;
             border-radius: 0.75rem;
-            transition: all 0.1s;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
+        .btn-primary:hover { background-color: #1d4ed8; transform: translateY(-1px); }
 
-        .btn-primary:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 8px 8px 0px #000;
-            background-color: #d4ff33;
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #475569;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            border: 1px solid #cbd5e1;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .btn-primary:active {
-            transform: translate(4px, 4px);
-            box-shadow: 2px 2px 0px #000;
-        }
+        .btn-secondary:hover { background-color: #f8fafc; color: #1e293b; border-color: #94a3b8; }
 
         /* Chart Containers */
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
             height: 300px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container { height: 350px; }
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 14px; }
-        ::-webkit-scrollbar-track { background: #f8fafc; border-left: 3px solid #000; }
-        ::-webkit-scrollbar-thumb { background: #000; border-radius: 0px; border: 3px solid #f8fafc; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff00ff; }
+        /* View Manager */
+        .app-view { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .app-view.active-view { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* Utilities */
         .hide { display: none !important; }
-        .tab-active { background-color: #00e5ff; color: #000; border-bottom: none; }
-        .tab-inactive { background-color: #e2e8f0; color: #64748b; }
-
-        /* Scroll Animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+        .tab-btn {
+            color: #64748b; border-bottom: 2px solid transparent; font-weight: 600;
         }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
+        .tab-btn.active {
+            color: #2563eb; border-bottom: 2px solid #2563eb; background-color: #f8fafc;
         }
 
-        /* Gallery CSS Gradients */
-        .bg-grad-1 { background: linear-gradient(135deg, #ccff00 0%, #00e5ff 100%); }
-        .bg-grad-2 { background: linear-gradient(135deg, #ff00ff 0%, #ff8c00 100%); }
-        .bg-grad-3 { background: linear-gradient(135deg, #000000 0%, #434343 100%); color: white; }
-
-        /* Modal Overlay */
-        #custom-modal {
-            backdrop-filter: blur(8px);
-            z-index: 1000;
+        /* Inputs */
+        .clean-input {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
         }
+        .clean-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
 
-        /* Ticker Animation */
-        @keyframes ticker {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+        /* Live Indicator */
+        .live-dot {
+            height: 10px; width: 10px; background-color: #ef4444; border-radius: 50%; display: inline-block;
+            animation: pulse-red 1.5s infinite;
         }
-        .animate-ticker {
-            display: inline-block;
-            white-space: nowrap;
-            animation: ticker 20s linear infinite;
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         
-        .table-row-hover:hover {
-            background-color: #ccff00;
-            color: #000;
-            transform: scale(1.02);
-            transition: all 0.2s;
-            border-radius: 0.5rem;
+        .nav-link.active { color: #2563eb; font-weight: 700; border-bottom: 2px solid #2563eb; }
+
+        /* Hero Special Effects (Stadium Background & Floating) */
+        .hero-bg {
+            background: url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+        }
+        
+        .hero-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(to right, rgba(10,25,47,0.95) 0%, rgba(10,25,47,0.7) 100%);
+        }
+        
+        .hero-floating {
+            animation: floating 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(212,175,55,0.4));
+        }
+        
+        .hero-glow-box {
+            box-shadow: 0 0 50px rgba(212,175,55,0.4), inset 0 0 20px rgba(212,175,55,0.5);
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-15px) scale(1.02); }
+            100% { transform: translateY(0px) scale(1); }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-[#ff00ff] selection:text-white">
+<body class="antialiased selection:bg-blue-100 selection:text-blue-900 flex flex-col min-h-screen">
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full bg-white border-b-4 border-black z-50 px-6 py-4 flex justify-between items-center shadow-[0_4px_0_0_rgba(0,0,0,1)]">
-        <div class="text-4xl font-black tracking-tighter uppercase cursor-pointer hover:rotate-2 transition-transform" style="text-shadow: 3px 3px 0px #ccff00;" onclick="window.scrollTo(0,0)">DPL 🏏</div>
-        <div class="hidden lg:flex gap-8 font-extrabold text-lg">
-            <a href="#about" class="hover:text-[#ff00ff] hover:-translate-y-1 transition-all">About</a>
-            <a href="#stats" class="hover:text-[#00e5ff] hover:-translate-y-1 transition-all">Stats</a>
-            <a href="#teams" class="hover:text-[#ccff00] hover:-translate-y-1 transition-all">Teams</a>
-            <a href="#gallery" class="hover:text-[#ff8c00] hover:-translate-y-1 transition-all">Gallery</a>
+    <!-- Top Navbar (SPA Navigation) -->
+    <nav class="sticky top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 z-50 px-4 md:px-6 py-3 shadow-sm">
+        <div class="max-w-[1400px] mx-auto flex justify-between items-center">
+            <div class="text-xl md:text-2xl font-black tracking-tight text-slate-900 cursor-pointer flex items-center gap-2" onclick="navigateTo('home')">
+                <span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">D</span>
+                DPL Central
+            </div>
+            
+            <!-- Desktop Nav -->
+            <div class="hidden lg:flex gap-6 text-sm font-medium text-slate-500 items-center">
+                <button onclick="navigateTo('home')" class="nav-link active pb-1 hover:text-blue-600 transition-colors" data-target="home">Home</button>
+                <button onclick="navigateTo('league')" class="nav-link pb-1 hover:text-blue-600 transition-colors" data-target="league">League</button>
+                <button onclick="navigateTo('teams')" class="nav-link pb-1 hover:text-blue-600 transition-colors" data-target="teams">Teams & Players</button>
+                <button onclick="navigateTo('auction')" class="nav-link pb-1 hover:text-blue-600 transition-colors" data-target="auction">Auction</button>
+                <button onclick="navigateTo('live')" class="nav-link pb-1 hover:text-blue-600 transition-colors flex items-center gap-1.5" data-target="live"><span class="live-dot w-2 h-2"></span> Live Score</button>
+                <button onclick="navigateTo('stats')" class="nav-link pb-1 hover:text-blue-600 transition-colors" data-target="stats">Stats</button>
+                <button onclick="navigateTo('media')" class="nav-link pb-1 hover:text-blue-600 transition-colors" data-target="media">Media</button>
+                <button onclick="navigateTo('hub')" class="nav-link pb-1 hover:text-blue-600 transition-colors" data-target="hub">Player Hub</button>
+            </div>
+
+            <button onclick="navigateTo('admin')" class="hidden md:flex btn-secondary px-4 py-1.5 text-xs text-slate-500"><span class="mr-1">🔒</span> Admin</button>
         </div>
-        <a href="#portal" class="btn-primary px-6 py-2 text-sm md:text-lg">Draft Portal</a>
     </nav>
 
-    <!-- News Ticker -->
-    <div class="fixed top-[76px] w-full bg-black text-[#ccff00] font-mono font-bold py-2 border-b-4 border-black z-40 overflow-hidden text-sm md:text-base">
-        <div class="animate-ticker">
-            🚨 SEASON 5 MEGA AUCTION DATE ANNOUNCED: 15TH NOVEMBER 🚨 | 🔥 PRIZE POOL INCREASED TO ₹50,000 🔥 | 👑 RAHUL WINS SEASON 4 MVP 👑 | 📝 REGISTRATIONS CLOSING SOON 📝
-        </div>
-    </div>
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow w-full max-w-[1400px] mx-auto p-4 md:p-6 lg:p-8">
 
-    <!-- Hero Section -->
-    <header class="pt-48 pb-20 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 min-h-screen">
-        <div class="lg:w-1/2 space-y-8 reveal active">
-            <div class="inline-block bg-[#ff00ff] text-white px-4 py-2 rounded-xl font-bold text-sm tracking-widest border-4 border-black shadow-[4px_4px_0_0_#000] transform -rotate-3">
-                🔥 SEASON 5 REGISTRATIONS OPEN
-            </div>
-            <h1 class="text-7xl md:text-8xl font-black leading-[0.9] uppercase tracking-tighter">
-                Deshgavhan <br>
-                <span style="color: #00e5ff; text-shadow: 5px 5px 0px #000; -webkit-text-stroke: 2px black;">Premier</span> <br>
-                League.
-            </h1>
-            <p class="text-2xl font-bold text-gray-800 max-w-lg border-l-8 border-[#ccff00] pl-4">
-                The most electrifying local T10 cricket tournament. Ultra-competitive, high-stakes, purely GenZ.
-            </p>
-            
-            <!-- Countdown Timer -->
-            <div class="solid-3d bg-white p-4 inline-block">
-                <p class="text-sm font-bold text-gray-500 uppercase mb-2">Draft Starts In:</p>
-                <div class="flex gap-4 font-mono text-3xl font-black">
-                    <div class="text-center"><span id="days" class="text-[#ff00ff]">14</span><span class="text-sm block text-black">DAYS</span></div>
-                    <div>:</div>
-                    <div class="text-center"><span id="hours" class="text-[#00e5ff]">08</span><span class="text-sm block text-black">HRS</span></div>
-                    <div>:</div>
-                    <div class="text-center"><span id="mins" class="text-[#ccff00]">45</span><span class="text-sm block text-black">MIN</span></div>
-                    <div>:</div>
-                    <div class="text-center"><span id="secs" class="text-black">22</span><span class="text-sm block text-black">SEC</span></div>
-                </div>
-            </div>
+        <!-- ========================================== -->
+        <!-- VIEW: HOME                                 -->
+        <!-- ========================================== -->
+        <div id="view-home" class="app-view active-view">
+            <!-- HERO SECTION (Animated Stadium Background & Floating Map) -->
+            <div class="clean-card hero-bg text-white mb-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12 shadow-2xl min-h-[80vh] lg:min-h-[calc(100vh-100px)] !border-0 rounded-3xl">
+                
+                <!-- Gradient Overlay -->
+                <div class="hero-overlay pointer-events-none z-0"></div>
 
-            <div class="flex flex-wrap gap-6 pt-4">
-                <a href="#portal" class="btn-primary px-10 py-5 text-xl">Enter Draft</a>
-                <a href="#rules" class="solid-3d px-10 py-5 text-xl font-bold hover:bg-gray-100 cursor-pointer text-center flex items-center gap-2">Read Rules <span>📜</span></a>
-            </div>
-        </div>
-        <div class="lg:w-1/2 w-full relative reveal active">
-            <div class="absolute inset-0 bg-[#ccff00] rounded-3xl transform rotate-6 border-4 border-black"></div>
-            <div class="absolute inset-0 bg-[#ff00ff] rounded-3xl transform -rotate-3 border-4 border-black"></div>
-            <div class="solid-3d relative bg-white p-10 aspect-square flex flex-col justify-center items-center text-center z-10">
-                <div class="text-[150px] leading-none mb-6 animate-pulse">🏆</div>
-                <h2 class="text-4xl font-black uppercase tracking-tight">Battle for the Crown</h2>
-                <div class="w-full h-2 bg-black my-4"></div>
-                <div class="flex justify-between w-full font-bold text-xl text-gray-600 font-mono">
-                    <span>6 TEAMS</span>
-                    <span>120 PLAYERS</span>
-                    <span>1 CHAMPION</span>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- About & Demographics -->
-    <section id="about" class="py-24 px-6 bg-black text-white border-y-8 border-black">
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-            <div class="space-y-8 reveal">
-                <h2 class="text-6xl font-black uppercase text-[#ccff00] tracking-tighter" style="text-shadow: 4px 4px 0px #fff;">What is DPL?</h2>
-                <p class="text-xl font-medium text-gray-300 leading-relaxed">
-                    The Deshgavhan Premier League isn't just a tournament; it's a battleground. We tore up the traditional rulebook to bring you a fast-paced, 90-minute T10 format that demands maximum intensity from ball one.
-                </p>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="solid-3d bg-white text-black p-6 !border-white hover:bg-[#00e5ff] transition-colors">
-                        <div class="text-4xl mb-2">💰</div>
-                        <div class="font-black text-2xl">₹50K+</div>
-                        <div class="font-bold text-sm text-gray-600">Prize Pool</div>
+                <!-- Text & Buttons -->
+                <div class="relative z-10 max-w-xl w-full p-8 md:p-12 lg:p-16">
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.1] tracking-tight uppercase text-white">
+                        Deshgavhan <br> Premier League
+                    </h1>
+                    <p class="text-slate-200 text-lg md:text-xl mb-10 font-medium leading-relaxed">
+                        Cricket's ultimate battleground. Witness the pride, the passion, and the glory.
+                    </p>
+                    <div class="flex flex-wrap gap-5">
+                        <button onclick="navigateTo('hub')" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B8942E] text-slate-900 font-bold hover:from-[#facc15] hover:to-[#D4AF37] transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] transform hover:-translate-y-1">
+                            Join the Battle
+                        </button>
+                        <button onclick="navigateTo('teams')" class="px-8 py-3.5 rounded-full bg-transparent border-2 border-[#D4AF37] text-[#D4AF37] font-bold hover:bg-[#D4AF37]/10 transition-all transform hover:-translate-y-1">
+                            View Teams
+                        </button>
                     </div>
-                    <div class="solid-3d bg-white text-black p-6 !border-white hover:bg-[#ff00ff] transition-colors">
-                        <div class="text-4xl mb-2">📺</div>
-                        <div class="font-black text-2xl">Live</div>
-                        <div class="font-bold text-sm text-gray-600">YouTube Streaming</div>
+                </div>
+                
+                <!-- Glowing Map Image (Floating) -->
+                <div class="relative z-10 w-full max-w-md md:max-w-sm lg:max-w-md shrink-0 p-8 md:p-12 lg:p-16">
+                    <!-- Glow & Float Wrapper -->
+                    <div class="hero-floating hero-glow-box relative rounded-[2rem] p-1 bg-gradient-to-br from-[#D4AF37]/60 via-transparent to-[#D4AF37]/20 transition-shadow duration-500">
+                        <img src="map.png" alt="Deshgavhan Map" class="w-full h-auto rounded-[1.8rem] border-4 border-[#0a192f] object-cover bg-[#0a192f]">
+                        <!-- Inner shadow overlay -->
+                        <div class="absolute inset-0 rounded-[2rem] shadow-[inset_0_0_30px_rgba(0,0,0,0.8)] pointer-events-none"></div>
                     </div>
                 </div>
             </div>
-            <div class="solid-3d bg-white text-black p-8 w-full reveal">
-                <h3 class="text-center font-black text-3xl mb-2 uppercase">Player Arsenal</h3>
-                <p class="text-center text-sm font-bold text-gray-500 mb-6 border-b-4 border-black pb-4">Current Registered Player Demographics</p>
-                <div class="chart-container">
-                    <canvas id="rolesChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Hall of Fame & History -->
-    <section id="stats" class="py-24 px-6 bg-[#f8fafc]">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-6xl font-black uppercase tracking-tighter" style="text-shadow: 4px 4px 0px #ff00ff;">Hall of Fame 👑</h2>
-                <p class="text-2xl font-bold text-gray-600 mt-4">The numbers that defined previous seasons.</p>
-            </div>
-
-            <!-- Leaderboards -->
-            <div class="grid md:grid-cols-2 gap-12 mb-16">
-                <!-- Top Batsmen -->
-                <div class="solid-3d bg-white p-6 reveal">
-                    <h3 class="text-3xl font-black uppercase mb-6 flex items-center gap-4 bg-[#ccff00] p-4 border-4 border-black"><span>🏏</span> Top Run Scorers</h3>
-                    <div class="overflow-hidden border-4 border-black rounded-xl">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-black text-white font-mono text-lg">
-                                    <th class="p-4 border-b-4 border-black">Player</th>
-                                    <th class="p-4 border-b-4 border-black text-center">Team</th>
-                                    <th class="p-4 border-b-4 border-black text-right">Runs</th>
-                                </tr>
-                            </thead>
-                            <tbody class="font-bold text-lg">
-                                <tr class="border-b-4 border-black table-row-hover">
-                                    <td class="p-4 flex items-center gap-2">🥇 Rahul D.</td>
-                                    <td class="p-4 text-center">Warriors</td>
-                                    <td class="p-4 text-right font-black text-2xl">412</td>
-                                </tr>
-                                <tr class="border-b-4 border-black table-row-hover">
-                                    <td class="p-4 flex items-center gap-2">🥈 Amit S.</td>
-                                    <td class="p-4 text-center">Titans</td>
-                                    <td class="p-4 text-right font-black text-2xl">385</td>
-                                </tr>
-                                <tr class="table-row-hover">
-                                    <td class="p-4 flex items-center gap-2">🥉 Vikash P.</td>
-                                    <td class="p-4 text-center">Strikers</td>
-                                    <td class="p-4 text-right font-black text-2xl">340</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Top Bowlers -->
-                <div class="solid-3d bg-white p-6 reveal">
-                    <h3 class="text-3xl font-black uppercase mb-6 flex items-center gap-4 bg-[#00e5ff] p-4 border-4 border-black"><span>🎯</span> Top Wicket Takers</h3>
-                    <div class="overflow-hidden border-4 border-black rounded-xl">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-black text-white font-mono text-lg">
-                                    <th class="p-4 border-b-4 border-black">Player</th>
-                                    <th class="p-4 border-b-4 border-black text-center">Team</th>
-                                    <th class="p-4 border-b-4 border-black text-right">Wickets</th>
-                                </tr>
-                            </thead>
-                            <tbody class="font-bold text-lg">
-                                <tr class="border-b-4 border-black table-row-hover">
-                                    <td class="p-4 flex items-center gap-2">🥇 Rohan K.</td>
-                                    <td class="p-4 text-center">Royals</td>
-                                    <td class="p-4 text-right font-black text-2xl">24</td>
-                                </tr>
-                                <tr class="border-b-4 border-black table-row-hover">
-                                    <td class="p-4 flex items-center gap-2">🥈 Sameer T.</td>
-                                    <td class="p-4 text-center">Warriors</td>
-                                    <td class="p-4 text-right font-black text-2xl">21</td>
-                                </tr>
-                                <tr class="table-row-hover">
-                                    <td class="p-4 flex items-center gap-2">🥉 Arjun M.</td>
-                                    <td class="p-4 text-center">Dragons</td>
-                                    <td class="p-4 text-right font-black text-2xl">18</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Trend Chart -->
-            <div class="solid-3d bg-white p-6 md:p-12 mb-12 reveal">
-                <h3 class="text-3xl font-black uppercase text-center mb-2">Explosion of Boundaries</h3>
-                <p class="text-center font-bold text-gray-500 mb-8 font-mono">Total boundaries hit across all 4 seasons.</p>
-                <div class="chart-container !max-w-5xl">
-                    <canvas id="historyChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Structure & Rules -->
-    <section id="rules" class="py-24 px-6 bg-[#00e5ff] border-y-8 border-black">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-6xl font-black uppercase text-center mb-16 tracking-tighter" style="text-shadow: 4px 4px 0px #fff;">League Rules ⚖️</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="solid-3d bg-white p-10 reveal">
-                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-4xl mb-6 border-4 border-[#00e5ff]">⏱️</div>
-                    <h3 class="text-3xl font-black mb-4 uppercase">T10 Format</h3>
-                    <p class="font-bold text-gray-700 text-lg">10 overs per side. Matches finish in 90 minutes. No time to settle, maximum intensity from ball one.</p>
-                </div>
-                <div class="solid-3d bg-white p-10 reveal" style="transition-delay: 100ms;">
-                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-4xl mb-6 border-4 border-[#ff00ff]">🔄</div>
-                    <h3 class="text-3xl font-black mb-4 uppercase">Impact Player</h3>
-                    <p class="font-bold text-gray-700 text-lg">One substitute allowed per inning. Change the game dynamics on the fly. Tactical masterclasses required.</p>
-                </div>
-                <div class="solid-3d bg-white p-10 reveal" style="transition-delay: 200ms;">
-                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-4xl mb-6 border-4 border-[#ccff00]">🚀</div>
-                    <h3 class="text-3xl font-black mb-4 uppercase">Powerplay</h3>
-                    <p class="font-bold text-gray-700 text-lg">First 3 overs. Only 2 fielders outside the 30-yard circle. Time for the top order to go nuclear.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Teams -->
-    <section id="teams" class="py-24 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-16 reveal">
-            <h2 class="text-6xl font-black uppercase tracking-tighter" style="text-shadow: 4px 4px 0px #ccff00;">The Franchises 🛡️</h2>
-            <p class="text-xl font-bold text-gray-600 mt-4">Click a team to view their Season 4 Roster & Captain.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Team Cards (Interactive) -->
-            <div onclick="openTeamModal('Warriors', '🗡️', '#ccff00', 'Rahul D.', ['Amit (VC)', 'Suresh', 'Kunal', 'Deepak', 'Yash', 'Praveen', 'Siddharth', 'Nitin', 'Manoj'])" class="solid-3d p-6 flex items-center gap-6 bg-white cursor-pointer hover:bg-[#ccff00] reveal">
-                <div class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center text-4xl shadow-[4px_4px_0_0_#000]">🗡️</div>
-                <div>
-                    <h3 class="font-black text-3xl uppercase tracking-tight">Warriors</h3>
-                    <div class="inline-block bg-black text-white px-3 py-1 rounded-md text-sm font-bold mt-2">2x Champions</div>
-                </div>
-            </div>
-
-            <div onclick="openTeamModal('Titans', '⚡', '#00e5ff', 'Amit S.', ['Rohan (VC)', 'Vijay', 'Karan', 'Tarun', 'Harsh', 'Omkar', 'Vinay', 'Ashish', 'Gaurav'])" class="solid-3d p-6 flex items-center gap-6 bg-white cursor-pointer hover:bg-[#00e5ff] reveal" style="transition-delay: 100ms;">
-                <div class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center text-4xl shadow-[4px_4px_0_0_#000]">⚡</div>
-                <div>
-                    <h3 class="font-black text-3xl uppercase tracking-tight">Titans</h3>
-                    <div class="inline-block bg-black text-white px-3 py-1 rounded-md text-sm font-bold mt-2">1x Champion</div>
-                </div>
-            </div>
-
-            <div onclick="openTeamModal('Strikers', '🦅', '#ff00ff', 'Vikash P.', ['Akash (VC)', 'Piyush', 'Naveen', 'Ravi', 'Sachin', 'Tushar', 'Vishal', 'Ajay', 'Chetan'])" class="solid-3d p-6 flex items-center gap-6 bg-white cursor-pointer hover:bg-[#ff00ff] reveal" style="transition-delay: 200ms;">
-                <div class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center text-4xl shadow-[4px_4px_0_0_#000]">🦅</div>
-                <div>
-                    <h3 class="font-black text-3xl uppercase tracking-tight">Strikers</h3>
-                    <div class="inline-block bg-black text-white px-3 py-1 rounded-md text-sm font-bold mt-2">1x Champion</div>
-                </div>
-            </div>
-
-            <div onclick="openTeamModal('Royals', '🦁', '#ff8c00', 'Rohan K.', ['Suraj (VC)', 'Bhavik', 'Chirag', 'Dinesh', 'Eknath', 'Ganesh', 'Hemant', 'Ishaan', 'Jatin'])" class="solid-3d p-6 flex items-center gap-6 bg-white cursor-pointer hover:bg-orange-400 reveal">
-                <div class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center text-4xl shadow-[4px_4px_0_0_#000]">🦁</div>
-                <div>
-                    <h3 class="font-black text-3xl uppercase tracking-tight">Royals</h3>
-                    <div class="inline-block bg-black text-white px-3 py-1 rounded-md text-sm font-bold mt-2">Runners Up S4</div>
-                </div>
-            </div>
-
-            <div onclick="openTeamModal('Dragons', '🐉', '#a855f7', 'Arjun M.', ['Lalit (VC)', 'Mahesh', 'Niraj', 'Pranav', 'Ritesh', 'Sahil', 'Tejas', 'Uday', 'Varun'])" class="solid-3d p-6 flex items-center gap-6 bg-white cursor-pointer hover:bg-purple-400 reveal" style="transition-delay: 100ms;">
-                <div class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center text-4xl shadow-[4px_4px_0_0_#000]">🐉</div>
-                <div>
-                    <h3 class="font-black text-3xl uppercase tracking-tight">Dragons</h3>
-                    <div class="inline-block bg-black text-white px-3 py-1 rounded-md text-sm font-bold mt-2">Playoffs S4</div>
-                </div>
-            </div>
-
-            <div onclick="openTeamModal('Storm', '🌪️', '#ef4444', 'TBD (Draft)', ['Draft Pick 2', 'Draft Pick 3', 'Draft Pick 4', 'Draft Pick 5', 'Draft Pick 6', 'Draft Pick 7', 'Draft Pick 8', 'Draft Pick 9', 'Draft Pick 10'])" class="solid-3d p-6 flex items-center gap-6 bg-white cursor-pointer hover:bg-red-400 reveal" style="transition-delay: 200ms;">
-                <div class="w-24 h-24 rounded-full border-4 border-black bg-white flex items-center justify-center text-4xl shadow-[4px_4px_0_0_#000]">🌪️</div>
-                <div>
-                    <h3 class="font-black text-3xl uppercase tracking-tight">Storm</h3>
-                    <div class="inline-block bg-black text-white px-3 py-1 rounded-md text-sm font-bold mt-2">New Expansion</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Interactive Portal (Registration/Login) -->
-    <section id="portal" class="py-24 px-6 bg-[#ccff00] border-y-8 border-black">
-        <div class="max-w-5xl mx-auto reveal">
-            <h2 class="text-6xl font-black uppercase text-center mb-6 tracking-tighter">Draft Portal 🔐</h2>
-            <p class="text-center font-bold mb-12 text-2xl border-b-4 border-black pb-8 mx-auto max-w-2xl">Use the portal to register for the S5 Draft. Data securely syncs via Google Sheets.</p>
-            
-            <div class="solid-3d bg-white overflow-hidden">
-                <!-- Tabs -->
-                <div class="flex border-b-4 border-black overflow-x-auto">
-                    <button onclick="switchTab('register')" id="tab-register" class="flex-1 min-w-[150px] py-6 font-black text-xl uppercase border-r-4 border-black tab-active transition-colors">📝 Apply S5</button>
-                    <button onclick="switchTab('player-login')" id="tab-player-login" class="flex-1 min-w-[150px] py-6 font-black text-xl uppercase border-r-4 border-black tab-inactive transition-colors hover:bg-gray-200">👤 Player</button>
-                    <button onclick="switchTab('admin-login')" id="tab-admin-login" class="flex-1 min-w-[150px] py-6 font-black text-xl uppercase tab-inactive transition-colors hover:bg-gray-200">👑 Admin</button>
-                </div>
-
-                <!-- Content Area -->
-                <div class="p-8 md:p-12">
-                    
-                    <!-- Registration Form -->
-                    <div id="content-register" class="block animate-fade-in">
-                        <div class="flex items-center justify-between mb-8">
-                            <h3 class="text-4xl font-black uppercase">Player Registration</h3>
-                            <span class="bg-red-500 text-white font-bold px-3 py-1 rounded-full text-sm animate-pulse border-2 border-black">LIVE</span>
+            <div class="grid lg:grid-cols-3 gap-8 mb-8">
+                <!-- QUICK HIGHLIGHTS -->
+                <div class="lg:col-span-2 clean-card p-6">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Quick Highlights</h2>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-amber-50 rounded-xl p-4 border border-amber-100 text-center">
+                            <div class="text-3xl mb-2">👑</div>
+                            <h3 class="font-bold text-amber-900 text-sm uppercase">Top Player (AI)</h3>
+                            <p class="text-lg font-black text-amber-700">Rahul D.</p>
                         </div>
-                        
-                        <!-- Form simulates posting to Google Sheets -->
-                        <form id="regForm" onsubmit="submitToGoogleSheets(event)" class="space-y-6">
-                            <div>
-                                <label class="block font-black text-lg mb-2 uppercase">Full Name</label>
-                                <input type="text" required class="w-full border-4 border-black rounded-xl p-4 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-[#00e5ff] transition-all shadow-[4px_4px_0_0_#000]" placeholder="Virat Kohli">
-                            </div>
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block font-black text-lg mb-2 uppercase">Phone Number</label>
-                                    <input type="tel" pattern="[0-9]{10}" required class="w-full border-4 border-black rounded-xl p-4 text-lg font-bold font-mono focus:outline-none focus:ring-4 focus:ring-[#00e5ff] transition-all shadow-[4px_4px_0_0_#000]" placeholder="9876543210">
-                                </div>
-                                <div>
-                                    <label class="block font-black text-lg mb-2 uppercase">Primary Role</label>
-                                    <select required class="w-full border-4 border-black rounded-xl p-4 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-[#00e5ff] transition-all shadow-[4px_4px_0_0_#000] appearance-none bg-white">
-                                        <option value="">Select Role...</option>
-                                        <option value="Batsman">Batsman</option>
-                                        <option value="Bowler">Bowler (Pace)</option>
-                                        <option value="Bowler">Bowler (Spin)</option>
-                                        <option value="All-Rounder">All-Rounder</option>
-                                        <option value="Wicket-Keeper">Wicket-Keeper</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block font-black text-lg mb-2 uppercase">Local Cricket Experience / Previous Teams</label>
-                                <textarea required class="w-full border-4 border-black rounded-xl p-4 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-[#00e5ff] transition-all shadow-[4px_4px_0_0_#000]" rows="3" placeholder="Played for XYZ club, hit 50 in final..."></textarea>
-                            </div>
-                            <button type="submit" id="submitBtn" class="w-full btn-primary py-6 text-2xl mt-8">Submit to Draft Database</button>
-                            <p class="text-sm font-bold text-gray-600 mt-4 text-center font-mono flex items-center justify-center gap-2">
-                                <span>🔒</span> Verified secure sync to DPL Central Google Sheets.
-                            </p>
-                        </form>
+                        <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 text-center text-white relative">
+                            <span class="absolute top-2 right-2 live-dot"></span>
+                            <div class="text-xs text-slate-400 font-bold uppercase mb-1">Live Match</div>
+                            <h3 class="font-bold text-sm">AP11 vs Cotton11</h3>
+                            <p class="text-2xl font-black text-emerald-400 mt-1">112/4 <span class="text-sm font-medium text-slate-300">(8.2 ov)</span></p>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-4 border border-blue-100 text-center">
+                            <div class="text-3xl mb-2">🛡️</div>
+                            <h3 class="font-bold text-blue-900 text-sm uppercase">Top Team</h3>
+                            <p class="text-lg font-black text-blue-700">AP11</p>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- Player Login -->
-                    <div id="content-player-login" class="hide animate-fade-in">
-                        <h3 class="text-4xl font-black mb-8 uppercase">Player Dashboard</h3>
-                        <form onsubmit="handleLogin(event, 'Player')" class="space-y-6 max-w-xl mx-auto">
-                            <div>
-                                <label class="block font-black text-lg mb-2 uppercase">Registered Mobile</label>
-                                <input type="tel" required class="w-full border-4 border-black rounded-xl p-4 text-lg font-bold font-mono focus:outline-none focus:ring-4 focus:ring-[#ff00ff] shadow-[4px_4px_0_0_#000]" placeholder="Enter mobile number">
-                            </div>
-                            <div>
-                                <label class="block font-black text-lg mb-2 uppercase">OTP / Secret PIN</label>
-                                <input type="password" required class="w-full border-4 border-black rounded-xl p-4 text-lg font-bold font-mono focus:outline-none focus:ring-4 focus:ring-[#ff00ff] shadow-[4px_4px_0_0_#000]" placeholder="****">
-                            </div>
-                            <button type="submit" class="w-full btn-primary !bg-[#ff00ff] !text-white py-6 text-2xl mt-8">Access Profile</button>
-                        </form>
+                <!-- SHORTCUT CARDS -->
+                <div class="clean-card p-6 flex flex-col justify-between">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Shortcuts</h2>
+                    <div class="space-y-3">
+                        <button onclick="navigateTo('auction')" class="w-full text-left p-3 rounded-lg hover:bg-slate-50 border border-slate-100 flex items-center justify-between group transition-all">
+                            <span class="font-semibold text-slate-700 group-hover:text-blue-600">🔨 Live Auction Desk</span>
+                            <span class="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+                        </button>
+                        <button onclick="navigateTo('stats')" class="w-full text-left p-3 rounded-lg hover:bg-slate-50 border border-slate-100 flex items-center justify-between group transition-all">
+                            <span class="font-semibold text-slate-700 group-hover:text-blue-600">📊 Player Stats</span>
+                            <span class="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+                        </button>
+                        <button onclick="navigateTo('media')" class="w-full text-left p-3 rounded-lg hover:bg-slate-50 border border-slate-100 flex items-center justify-between group transition-all">
+                            <span class="font-semibold text-slate-700 group-hover:text-blue-600">📸 Action Gallery</span>
+                            <span class="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+                        </button>
                     </div>
-
-                    <!-- Admin Login -->
-                    <div id="content-admin-login" class="hide animate-fade-in">
-                        <h3 class="text-4xl font-black mb-8 uppercase text-center">Management Control</h3>
-                        <form onsubmit="handleLogin(event, 'Admin')" class="space-y-6 max-w-xl mx-auto">
-                            <div>
-                                <label class="block font-black text-lg mb-2 uppercase">Admin ID</label>
-                                <input type="text" required class="w-full border-4 border-black rounded-xl p-4 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-black shadow-[4px_4px_0_0_#000]" placeholder="Username">
-                            </div>
-                            <div>
-                                <label class="block font-black text-lg mb-2 uppercase">Master Password</label>
-                                <input type="password" required class="w-full border-4 border-black rounded-xl p-4 text-lg font-bold focus:outline-none focus:ring-4 focus:ring-black shadow-[4px_4px_0_0_#000]" placeholder="********">
-                            </div>
-                            <button type="submit" class="w-full btn-primary !bg-black !text-[#ccff00] py-6 text-2xl mt-8">Authenticate</button>
-                        </form>
-                    </div>
-
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Action Gallery -->
-    <section id="gallery" class="py-24 px-6 max-w-7xl mx-auto">
-        <h2 class="text-6xl font-black uppercase text-center mb-16 tracking-tighter">Action Gallery 📸</h2>
-        
-        <!-- CSS Styled Gallery Grid (No external images) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+        <!-- ========================================== -->
+        <!-- VIEW: LEAGUE                               -->
+        <!-- ========================================== -->
+        <div id="view-league" class="app-view">
+            <h1 class="text-3xl font-bold text-slate-900 mb-6">League Information</h1>
+            <div class="clean-card overflow-hidden">
+                <!-- Inner Tabs -->
+                <div class="flex border-b border-slate-200 bg-slate-50/50 overflow-x-auto">
+                    <button onclick="switchInnerTab('league', 'about')" id="tab-league-about" class="tab-btn active px-6 py-4 text-sm">What is DPL</button>
+                    <button onclick="switchInnerTab('league', 'history')" id="tab-league-history" class="tab-btn px-6 py-4 text-sm">History / Seasons</button>
+                    <button onclick="switchInnerTab('league', 'rules')" id="tab-league-rules" class="tab-btn px-6 py-4 text-sm">Structure & Rules</button>
+                </div>
+                
+                <div class="p-8">
+                    <div id="content-league-about" class="block">
+                        <h2 class="text-2xl font-bold mb-4">About the League</h2>
+                        <p class="text-slate-600 mb-6 leading-relaxed">The Deshgavhan Premier League is a community-driven, highly competitive cricket tournament aimed at discovering and showcasing local talent. Operating on a professional franchise model.</p>
+                        <h3 class="text-lg font-bold mb-2">Vision & Mission</h3>
+                        <p class="text-slate-600 leading-relaxed">To provide a state-of-the-art platform for Deshgavhan's youth, promoting sportsmanship, unity, and physical excellence through the spirit of cricket.</p>
+                    </div>
+
+                    <div id="content-league-history" class="hide">
+                        <h2 class="text-2xl font-bold mb-6">Tournament History</h2>
+                        <div class="space-y-4">
+                            <div class="p-4 border border-slate-100 rounded-xl bg-slate-50">
+                                <h3 class="font-bold text-blue-600">Season 1</h3>
+                                <p class="text-sm text-slate-600 mt-1">The inaugural season that started it all. <span class="font-bold text-slate-900">Winners: AP11</span></p>
+                            </div>
+                            <div class="p-4 border border-slate-100 rounded-xl bg-slate-50">
+                                <h3 class="font-bold text-emerald-600">Season 2</h3>
+                                <p class="text-sm text-slate-600 mt-1">Expanded format with new franchises. <span class="font-bold text-slate-900">Winners: Cotton11</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="content-league-rules" class="hide">
+                        <h2 class="text-2xl font-bold mb-6">Structure & Rules</h2>
+                        <ul class="space-y-4 text-slate-700">
+                            <li class="flex items-start gap-3"><span class="text-blue-500 font-bold">1.</span> <div><strong>Match Format:</strong> Strictly T10 (10 Overs per inning). 90-minute match duration.</div></li>
+                            <li class="flex items-start gap-3"><span class="text-blue-500 font-bold">2.</span> <div><strong>Player Eligibility:</strong> <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-sm font-bold ml-1">MUST BE DESHGAVHAN DOMICILE</span>. Outside players are strictly prohibited.</div></li>
+                            <li class="flex items-start gap-3"><span class="text-blue-500 font-bold">3.</span> <div><strong>Auction:</strong> All teams have an equal virtual purse. Base prices determined by committee.</div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW: TEAMS & PLAYERS                      -->
+        <!-- ========================================== -->
+        <div id="view-teams" class="app-view">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Official Franchises</h1>
+            <p class="text-slate-500 mb-8">Click a team to view their roster.</p>
             
-            <div class="solid-3d aspect-square bg-grad-1 flex flex-col items-center justify-center p-8 text-center cursor-pointer relative overflow-hidden group reveal">
-                <div class="text-[80px] mb-4 group-hover:scale-125 transition-transform duration-500">🏆</div>
-                <div class="font-black text-2xl uppercase bg-black text-white px-4 py-2 border-2 border-white transform -rotate-3 group-hover:rotate-0 transition-transform">S4 Champions</div>
-                <!-- Hover Overlay -->
-                <div class="absolute inset-0 bg-black/90 text-white flex flex-col justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p class="font-bold text-lg mb-2">Warriors lift the cup!</p>
-                    <p class="text-sm font-mono text-[#ccff00]">Won by 12 runs vs Royals. Man of the Match: Rahul D.</p>
-                </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="teams-grid">
+                <!-- Populated by JS -->
             </div>
 
-            <div class="solid-3d aspect-[4/5] bg-grad-3 flex flex-col items-center justify-center p-8 text-center cursor-pointer relative overflow-hidden group reveal md:row-span-2" style="transition-delay: 100ms;">
-                <div class="text-[100px] mb-4 group-hover:-translate-y-4 transition-transform duration-500">💥</div>
-                <div class="font-black text-3xl uppercase bg-[#ccff00] text-black px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">Mega Six</div>
-                <div class="absolute inset-0 bg-[#00e5ff]/90 text-black flex flex-col justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p class="font-black text-2xl mb-2">Longest Six of S4</p>
-                    <p class="text-lg font-bold bg-white p-2 border-2 border-black">104 Meters by Amit S.</p>
+            <div class="clean-card p-6 bg-amber-50/50 border-amber-100">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="text-2xl">🔥</div>
+                    <h2 class="text-xl font-bold text-amber-900">Unassigned Player Pool</h2>
+                    <span class="ml-auto bg-amber-200 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">Awaiting Auction</span>
                 </div>
-            </div>
-
-            <div class="solid-3d aspect-square bg-grad-2 flex flex-col items-center justify-center p-8 text-center cursor-pointer relative overflow-hidden group reveal" style="transition-delay: 200ms;">
-                <div class="text-[80px] mb-4 group-hover:rotate-12 transition-transform duration-500">🎯</div>
-                <div class="font-black text-2xl uppercase bg-white text-black px-4 py-2 border-4 border-black">Perfect Yorker</div>
-                <div class="absolute inset-0 bg-[#ff00ff]/90 text-white flex flex-col justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p class="font-bold text-lg mb-2">Middle stump out of the ground!</p>
-                    <p class="text-sm font-mono text-white">Bowled by Rohan K. Speed: 135kmph.</p>
-                </div>
-            </div>
-
-            <div class="solid-3d aspect-square bg-[#e2e8f0] flex flex-col items-center justify-center p-8 text-center cursor-pointer relative overflow-hidden group reveal">
-                <div class="text-[80px] mb-4 group-hover:scale-110 transition-transform duration-500">🏟️</div>
-                <div class="font-black text-2xl uppercase bg-black text-[#ccff00] px-4 py-2 border-2 border-black">Packed Crowd</div>
-                <div class="absolute inset-0 bg-black/90 text-white flex flex-col justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p class="font-bold text-lg mb-2">Record Attendance</p>
-                    <p class="text-sm font-mono text-[#00e5ff]">Over 2000 locals gathered for the Finals.</p>
-                </div>
-            </div>
-
-            <div class="solid-3d aspect-square bg-grad-1 flex flex-col items-center justify-center p-8 text-center cursor-pointer relative overflow-hidden group reveal" style="transition-delay: 100ms;">
-                <div class="text-[80px] mb-4 group-hover:-rotate-12 transition-transform duration-500">🤝</div>
-                <div class="font-black text-2xl uppercase bg-white text-black px-4 py-2 border-4 border-black">Spirit of Cricket</div>
-                <div class="absolute inset-0 bg-[#ccff00]/90 text-black flex flex-col justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p class="font-bold text-lg mb-2">Captains Handshake</p>
-                    <p class="text-sm font-bold bg-white p-2 border-2 border-black">Pre-match rituals before the big clash.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-xs uppercase text-amber-700 border-b border-amber-200">
+                            <tr><th class="pb-3 px-2">Player Name</th><th class="pb-3 px-2">Role</th><th class="pb-3 px-2 text-right">Status</th></tr>
+                        </thead>
+                        <tbody id="unassigned-list" class="text-slate-700">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW: AUCTION SYSTEM                       -->
+        <!-- ========================================== -->
+        <div id="view-auction" class="app-view">
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900 flex items-center gap-3">Live Auction Desk 🔨</h1>
+                    <p class="text-slate-500 mt-1">Assign players to franchises dynamically.</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Current Player Card -->
+                <div class="lg:col-span-1">
+                    <div class="clean-card p-8 text-center bg-slate-900 text-white shadow-xl relative overflow-hidden h-full flex flex-col justify-center">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">👤</div>
+                        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">On The Block</h2>
+                        <h3 id="auction-player-name" class="text-4xl font-black text-white mb-2">---</h3>
+                        <p id="auction-player-role" class="text-blue-400 font-medium mb-6">---</p>
+                        
+                        <div class="bg-white/10 rounded-xl p-4 mb-8 border border-white/20">
+                            <p class="text-xs text-slate-400 uppercase mb-1">Base Price</p>
+                            <p id="auction-player-price" class="text-3xl font-bold text-emerald-400">---</p>
+                        </div>
+
+                        <button onclick="nextAuctionPlayer()" class="btn-secondary w-full py-3 text-slate-900">Skip / Next Player →</button>
+                    </div>
+                </div>
+
+                <!-- Assignment Actions -->
+                <div class="lg:col-span-2 clean-card p-6 flex flex-col">
+                    <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Assign to Franchise (Winning Bid)</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8" id="auction-team-buttons">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div class="mt-auto">
+                        <h3 class="font-bold text-slate-900 mb-3 text-sm uppercase">Auction Activity Log</h3>
+                        <div id="auction-log" class="bg-slate-50 border border-slate-200 rounded-xl p-4 h-40 overflow-y-auto text-sm font-mono text-slate-600 flex flex-col gap-2">
+                            <div><span class="text-emerald-500 font-bold">System:</span> Auction desk initialized. Waiting for bids.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW: PLAYER HUB                           -->
+        <!-- ========================================== -->
+        <div id="view-hub" class="app-view">
+            <h1 class="text-3xl font-bold text-slate-900 mb-6">Player Hub</h1>
+            <div class="clean-card overflow-hidden max-w-3xl mx-auto">
+                <div class="flex border-b border-slate-200 bg-slate-50/50">
+                    <button onclick="switchInnerTab('hub', 'reg')" id="tab-hub-reg" class="tab-btn active flex-1 py-4 text-sm">Registration</button>
+                    <button onclick="switchInnerTab('hub', 'login')" id="tab-hub-login" class="tab-btn flex-1 py-4 text-sm">Login</button>
+                    <button onclick="switchInnerTab('hub', 'dash')" id="tab-hub-dash" class="tab-btn flex-1 py-4 text-sm">Dashboard</button>
+                </div>
+                
+                <div class="p-8">
+                    <!-- Reg Form -->
+                    <div id="content-hub-reg" class="block">
+                        <h2 class="text-xl font-bold mb-6">New Player Registration</h2>
+                        <form onsubmit="handleFormSubmit(event, 'Player registered successfully for the draft!')" class="space-y-4">
+                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label><input type="text" required class="clean-input"></div>
+                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Mobile</label><input type="tel" required class="clean-input"></div>
+                            <div><label class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+                                <select required class="clean-input appearance-none"><option value="">Select Role</option><option>Batsman</option><option>Bowler</option><option>All-Rounder</option></select>
+                            </div>
+                            <button type="submit" class="btn-primary w-full py-3 mt-4">Submit Application</button>
+                        </form>
+                    </div>
+
+                    <!-- Login -->
+                    <div id="content-hub-login" class="hide text-center">
+                        <h2 class="text-xl font-bold mb-6">Player Login</h2>
+                        <form onsubmit="handleFormSubmit(event, 'Login feature requires backend connection.')" class="space-y-4 max-w-xs mx-auto">
+                            <div><input type="tel" required placeholder="Mobile Number" class="clean-input text-center"></div>
+                            <div><input type="password" required placeholder="PIN" class="clean-input text-center"></div>
+                            <button type="submit" class="btn-primary w-full py-3 mt-2">Secure Login</button>
+                        </form>
+                    </div>
+
+                    <!-- Dashboard -->
+                    <div id="content-hub-dash" class="hide text-center py-12">
+                        <div class="text-4xl mb-4">🔒</div>
+                        <h3 class="text-lg font-bold text-slate-900">Authentication Required</h3>
+                        <p class="text-slate-500 mt-2">Please login to view your personal stats and team assignment.</p>
+                        <button onclick="switchInnerTab('hub', 'login')" class="btn-secondary mt-6 px-6 py-2">Go to Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW: LIVE SCORE                           -->
+        <!-- ========================================== -->
+        <div id="view-live" class="app-view">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="live-dot"></span>
+                <h1 class="text-3xl font-bold text-slate-900">Live Match Center</h1>
+                <span class="ml-auto text-xs font-bold text-slate-500 bg-slate-200 px-3 py-1 rounded-full flex items-center gap-2">Auto-Refresh <svg class="animate-spin h-3 w-3 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>
+            </div>
+
+            <div class="clean-card bg-slate-900 text-white p-6 md:p-10 mb-8 border-slate-800 shadow-2xl">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                    <!-- Team 1 -->
+                    <div class="text-center w-full md:w-1/3">
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-300">AP11</h2>
+                        <div class="text-5xl md:text-7xl font-black text-emerald-400 tracking-tighter mt-2" id="live-score-1">112<span class="text-3xl md:text-4xl text-emerald-200">/4</span></div>
+                        <p class="text-slate-400 mt-2 font-mono" id="live-overs-1">Overs: 8.2 / 10</p>
+                    </div>
+                    
+                    <!-- VS -->
+                    <div class="text-slate-500 font-black text-2xl italic">VS</div>
+
+                    <!-- Team 2 -->
+                    <div class="text-center w-full md:w-1/3">
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-300">Cotton11</h2>
+                        <div class="text-3xl font-bold text-slate-500 mt-4">Yet to bat</div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-700 mt-8 pt-6 grid grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <p class="text-slate-400 uppercase tracking-widest text-xs mb-2">Current Batters</p>
+                        <div class="flex justify-between font-bold"><span class="text-white">Rahul D. *</span> <span class="text-amber-400">42 (18)</span></div>
+                        <div class="flex justify-between font-bold mt-1"><span class="text-slate-300">Amit S.</span> <span class="text-amber-400">12 (8)</span></div>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 uppercase tracking-widest text-xs mb-2">Current Bowler</p>
+                        <div class="flex justify-between font-bold"><span class="text-white">Jasprit</span> <span class="text-blue-400">2-18 (1.2)</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW: STATS DASHBOARD                      -->
+        <!-- ========================================== -->
+        <div id="view-stats" class="app-view">
+            <h1 class="text-3xl font-bold text-slate-900 mb-6">Stats Dashboard 📊</h1>
+            
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                <!-- AI Ranking -->
+                <div class="clean-card p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-100">
+                    <h2 class="text-lg font-bold text-indigo-900 mb-4 flex items-center gap-2">🧠 AI Player Ranking</h2>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-indigo-50 mb-3 flex items-center gap-4">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center font-bold text-indigo-600">#1</div>
+                        <div><p class="font-bold text-slate-900">Rahul D.</p><p class="text-xs text-slate-500">Form Rating: 98/100</p></div>
+                        <span class="ml-auto text-xl">🔥</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-4">
+                        <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-600">#2</div>
+                        <div><p class="font-bold text-slate-900">Rohan K.</p><p class="text-xs text-slate-500">Form Rating: 94/100</p></div>
+                        <span class="ml-auto text-xl">🎯</span>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Bat -->
+                <div class="clean-card p-0 overflow-hidden">
+                    <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 font-bold text-slate-700">Top Batsmen</div>
+                    <ul class="divide-y divide-slate-100 text-sm">
+                        <li class="p-4 flex justify-between"><span class="font-medium">1. Rahul D.</span> <span class="font-bold text-blue-600">412 Runs</span></li>
+                        <li class="p-4 flex justify-between"><span class="font-medium">2. Amit S.</span> <span class="font-bold text-blue-600">385 Runs</span></li>
+                        <li class="p-4 flex justify-between"><span class="font-medium">3. Vikash P.</span> <span class="font-bold text-blue-600">340 Runs</span></li>
+                    </ul>
+                </div>
+
+                <!-- Leaderboard Bowl -->
+                <div class="clean-card p-0 overflow-hidden">
+                    <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 font-bold text-slate-700">Top Bowlers</div>
+                    <ul class="divide-y divide-slate-100 text-sm">
+                        <li class="p-4 flex justify-between"><span class="font-medium">1. Rohan K.</span> <span class="font-bold text-emerald-600">24 Wkts</span></li>
+                        <li class="p-4 flex justify-between"><span class="font-medium">2. Sameer T.</span> <span class="font-bold text-emerald-600">21 Wkts</span></li>
+                        <li class="p-4 flex justify-between"><span class="font-medium">3. Arjun M.</span> <span class="font-bold text-emerald-600">18 Wkts</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="clean-card p-6">
+                <h2 class="text-lg font-bold text-slate-900 mb-6">Tournament Scoring Trends</h2>
+                <div class="chart-container"><canvas id="statsChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW: MEDIA                                -->
+        <!-- ========================================== -->
+        <div id="view-media" class="app-view">
+            <h1 class="text-3xl font-bold text-slate-900 mb-6">Media Center</h1>
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Latest News</h2>
+                    <div class="space-y-4">
+                        <div class="clean-card p-4 hover:bg-slate-50 cursor-pointer">
+                            <span class="text-xs font-bold text-blue-600 uppercase">Announcement</span>
+                            <h3 class="font-bold text-slate-900 mt-1">Season 5 Auction Dates Confirmed</h3>
+                            <p class="text-sm text-slate-500 mt-2">The management has officially announced the auction for the 15th of November.</p>
+                        </div>
+                        <div class="clean-card p-4 hover:bg-slate-50 cursor-pointer">
+                            <span class="text-xs font-bold text-emerald-600 uppercase">Update</span>
+                            <h3 class="font-bold text-slate-900 mt-1">Prize Pool Increased</h3>
+                            <p class="text-sm text-slate-500 mt-2">Sponsorships have driven the total prize pool over ₹50,000.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Action Gallery</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="clean-card aspect-square bg-slate-800 flex items-center justify-center text-4xl text-white opacity-90 hover:opacity-100 transition-opacity cursor-pointer">🏆</div>
+                        <div class="clean-card aspect-square bg-slate-800 flex items-center justify-center text-4xl text-white opacity-90 hover:opacity-100 transition-opacity cursor-pointer">🏏</div>
+                        <div class="clean-card aspect-square bg-slate-800 flex items-center justify-center text-4xl text-white opacity-90 hover:opacity-100 transition-opacity cursor-pointer">🔥</div>
+                        <div class="clean-card aspect-square bg-slate-800 flex items-center justify-center text-4xl text-white opacity-90 hover:opacity-100 transition-opacity cursor-pointer">🏟️</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW: ADMIN PANEL                          -->
+        <!-- ========================================== -->
+        <div id="view-admin" class="app-view">
+            <div class="max-w-md mx-auto mt-10">
+                <div class="text-center mb-8">
+                    <div class="text-4xl mb-4">🔒</div>
+                    <h1 class="text-2xl font-bold text-slate-900">Admin Control Panel</h1>
+                    <p class="text-sm text-slate-500 mt-1">Authorized committee members only.</p>
+                </div>
+                
+                <div class="clean-card p-8 bg-slate-900 text-white">
+                    <form onsubmit="handleFormSubmit(event, 'Admin dashboard access is restricted in this demo view.')" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Admin ID</label>
+                            <input type="text" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Master Password</label>
+                            <input type="password" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <button type="submit" class="btn-primary w-full py-3 mt-4 !bg-blue-600 hover:!bg-blue-500">Access Dashboard</button>
+                    </form>
+                    
+                    <div class="mt-8 pt-6 border-t border-slate-700 text-xs text-slate-400 font-mono">
+                        <p>Restricted actions inside:</p>
+                        <ul class="list-disc pl-4 mt-2 space-y-1">
+                            <li>Approve Players</li>
+                            <li>Assign Teams (Auction Override)</li>
+                            <li>Update Live Scores</li>
+                            <li>Add News/Media</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-black text-white py-16 px-6 border-t-8 border-[#ccff00]">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 items-center text-center md:text-left">
-            <div>
-                <div class="text-6xl font-black tracking-tighter uppercase mb-4" style="text-shadow: 4px 4px 0px #ff00ff;">DPL</div>
-                <p class="font-bold text-gray-400">Deshgavhan Premier League.<br>The ultimate local cricket experience.</p>
-            </div>
-            
-            <div class="flex flex-col space-y-2 font-bold text-lg">
-                <a href="#about" class="hover:text-[#00e5ff] transition-colors">About Us</a>
-                <a href="#rules" class="hover:text-[#00e5ff] transition-colors">Tournament Rules</a>
-                <a href="#portal" class="hover:text-[#00e5ff] transition-colors">Player Registration</a>
-                <a href="#" class="hover:text-[#00e5ff] transition-colors">Contact Management</a>
-            </div>
-
-            <div class="flex flex-col items-center md:items-end gap-6">
-                <p class="font-bold text-[#ccff00]">Follow the Action</p>
-                <div class="flex gap-4">
-                    <!-- Social Placeholders using HTML/CSS only -->
-                    <div class="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center font-black text-xl cursor-pointer hover:-translate-y-2 transition-transform border-4 border-black shadow-[4px_4px_0_0_#ccff00]">X</div>
-                    <div class="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center font-black text-xl cursor-pointer hover:-translate-y-2 transition-transform border-4 border-black shadow-[4px_4px_0_0_#ff00ff]">Ig</div>
-                    <div class="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center font-black text-xl cursor-pointer hover:-translate-y-2 transition-transform border-4 border-black shadow-[4px_4px_0_0_#00e5ff]">Yt</div>
+    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
+        <div class="max-w-[1400px] mx-auto flex flex-col items-center justify-center gap-4">
+            <div class="flex items-center gap-4">
+                <!-- AR Logo (Spanning two lines in height, placed on the left) -->
+                <img src="ar_logo.png" alt="AR Logo" class="h-14 w-auto rounded-lg object-contain shadow-md border border-slate-100">
+                
+                <!-- DPL 3.0 Text (Two lines) -->
+                <div class="text-left flex flex-col justify-center">
+                    <div class="font-black text-slate-900 text-2xl tracking-tight leading-none mb-1">DPL 3.0</div>
+                    <div class="text-sm text-slate-500 leading-none">© 2026 Deshgavhan Premier League.</div>
                 </div>
             </div>
-        </div>
-        <div class="max-w-7xl mx-auto mt-12 pt-8 border-t-2 border-gray-800 text-center font-mono text-sm text-gray-500">
-            © 2026 Deshgavhan Premier League. Created for high-stakes competition.
         </div>
     </footer>
 
-    <!-- Universal Custom Modal (Replaces Alerts & Static Team Info) -->
-    <div id="custom-modal" class="fixed inset-0 flex items-center justify-center hide px-4">
-        <div class="absolute inset-0 bg-black/60 cursor-pointer" onclick="closeModal()"></div>
-        <div class="solid-3d bg-white p-0 max-w-md w-full z-10 relative overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modal-content-box">
-            
-            <!-- Dynamic Header Injected Here -->
-            <div id="modal-header" class="p-6 bg-black text-white border-b-4 border-black">
-                <h3 id="modal-title" class="text-3xl font-black uppercase tracking-tighter">Notice</h3>
+    <!-- Universal Modal -->
+    <div id="custom-modal" class="fixed inset-0 flex items-center justify-center hide px-4 transition-opacity duration-300 z-[1000]">
+        <div class="absolute inset-0 bg-slate-900/40 cursor-pointer" onclick="closeModal()"></div>
+        <div class="bg-white rounded-2xl shadow-2xl p-0 max-w-sm w-full z-10 relative overflow-hidden transform scale-95 opacity-0 transition-all duration-300 border border-slate-100" id="modal-content-box">
+            <div class="flex justify-between items-center p-6 border-b border-slate-100">
+                <h3 id="modal-title" class="text-lg font-bold text-slate-900">Notice</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
             </div>
-            
-            <div class="p-6 md:p-8">
-                <div id="modal-body" class="mb-8">
-                    <p id="modal-msg" class="font-bold text-gray-700 text-lg">Message goes here.</p>
-                </div>
-                <button onclick="closeModal()" class="w-full btn-primary py-4 text-xl">Close / Got It</button>
+            <div class="p-6">
+                <div id="modal-body" class="mb-6 text-slate-600 text-sm leading-relaxed"></div>
+                <button onclick="closeModal()" class="w-full btn-secondary py-2.5 text-sm">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- Application Logic -->
+    <!-- Application Logic (Vanilla JS) -->
     <script>
-        // --- Core UI & State Logic ---
+        // --- 1. State Management ---
+        const state = {
+            teams: {
+                'AP11': ['Suresh (C)', 'Ramesh'],
+                'Cotton11': ['Vikash (C)'],
+                'Balkrushna11': ['Amit (C)'],
+                'Ajinkya Classes11': ['Piyush (C)'],
+                'Ankushraj11': ['Rahul (C)']
+            },
+            unassigned: [
+                { name: 'Virat K.', role: 'Batsman', price: '₹5,000' },
+                { name: 'Jasprit B.', role: 'Bowler', price: '₹6,000' },
+                { name: 'Hardik P.', role: 'All-Rounder', price: '₹7,500' },
+                { name: 'Rishabh P.', role: 'Keeper', price: '₹4,000' }
+            ],
+            auctionIndex: 0,
+            chartInitialized: false
+        };
 
-        // Tab Switching Logic for Portal
-        function switchTab(tabId) {
-            const tabs = ['register', 'player-login', 'admin-login'];
+        // --- 2. Navigation & View Logic ---
+        function navigateTo(viewId) {
+            // Hide all views
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active-view'));
+            // Show target
+            document.getElementById(`view-${viewId}`).classList.add('active-view');
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(el => {
+                if(el.dataset.target === viewId) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            // Scroll to top smoothly
+            window.scrollTo(0,0);
+
+            // Special initializations based on view
+            if(viewId === 'teams') renderTeams();
+            if(viewId === 'auction') { renderAuctionPlayer(); renderAuctionButtons(); }
+            if(viewId === 'stats' && !state.chartInitialized) renderChart();
+        }
+
+        function switchInnerTab(group, tabId) {
+            // Hide all contents in group
+            document.querySelectorAll(`[id^="content-${group}-"]`).forEach(el => el.classList.add('hide'));
+            // Deactivate all buttons in group
+            document.querySelectorAll(`[id^="tab-${group}-"]`).forEach(el => el.classList.remove('active'));
+            // Show/Activate target
+            document.getElementById(`content-${group}-${tabId}`).classList.remove('hide');
+            document.getElementById(`tab-${group}-${tabId}`).classList.add('active');
+        }
+
+        // --- 3. Dynamic UI Rendering ---
+        function renderTeams() {
+            const grid = document.getElementById('teams-grid');
+            grid.innerHTML = '';
             
-            tabs.forEach(tab => {
-                const btn = document.getElementById(`tab-${tab}`);
-                const content = document.getElementById(`content-${tab}`);
-                
-                if (tab === tabId) {
-                    btn.classList.remove('tab-inactive');
-                    btn.classList.add('tab-active');
-                    content.classList.remove('hide');
-                } else {
-                    btn.classList.remove('tab-active');
-                    btn.classList.add('tab-inactive');
-                    content.classList.add('hide');
-                }
+            Object.keys(state.teams).forEach(team => {
+                const count = state.teams[team].length;
+                const html = `
+                    <div onclick="showTeamModal('${team}')" class="clean-card clean-card-hover p-6 cursor-pointer flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">${team}</h3>
+                            <p class="text-sm text-slate-500 mt-1">${count} Players</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">→</div>
+                    </div>
+                `;
+                grid.innerHTML += html;
+            });
+
+            const unassignedList = document.getElementById('unassigned-list');
+            unassignedList.innerHTML = '';
+            state.unassigned.forEach(p => {
+                unassignedList.innerHTML += `
+                    <tr class="border-b border-amber-100/50 last:border-0">
+                        <td class="py-3 px-2 font-medium">${p.name}</td>
+                        <td class="py-3 px-2 text-slate-500">${p.role}</td>
+                        <td class="py-3 px-2 text-right"><span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-xs">Waiting</span></td>
+                    </tr>
+                `;
             });
         }
 
-        // Universal Modal Logic
-        function showModal(title, contentHTML, headerBgColor = '#000', headerTextColor = '#fff') {
+        // --- 4. Auction System Logic ---
+        function renderAuctionPlayer() {
+            const player = state.unassigned[state.auctionIndex];
+            if (player) {
+                document.getElementById('auction-player-name').innerText = player.name;
+                document.getElementById('auction-player-role').innerText = player.role;
+                document.getElementById('auction-player-price').innerText = player.price;
+            } else {
+                document.getElementById('auction-player-name').innerText = "Pool Empty";
+                document.getElementById('auction-player-role').innerText = "All players auctioned.";
+                document.getElementById('auction-player-price').innerText = "---";
+            }
+        }
+
+        function renderAuctionButtons() {
+            const container = document.getElementById('auction-team-buttons');
+            container.innerHTML = '';
+            Object.keys(state.teams).forEach(team => {
+                container.innerHTML += `<button onclick="assignPlayer('${team}')" class="btn-secondary py-2 text-sm truncate px-2 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200">${team}</button>`;
+            });
+        }
+
+        function assignPlayer(teamName) {
+            const player = state.unassigned[state.auctionIndex];
+            if (!player) return; // Pool empty
+
+            // Move data
+            state.teams[teamName].push(player.name);
+            state.unassigned.splice(state.auctionIndex, 1);
+            
+            // Log activity
+            const log = document.getElementById('auction-log');
+            log.innerHTML = `<div><span class="text-blue-600 font-bold">${teamName}</span> secured ${player.name} at ${player.price}</div>` + log.innerHTML;
+            
+            // Re-render
+            renderAuctionPlayer();
+        }
+
+        function nextAuctionPlayer() {
+            if (state.unassigned.length === 0) return;
+            state.auctionIndex++;
+            if (state.auctionIndex >= state.unassigned.length) state.auctionIndex = 0; // wrap around
+            renderAuctionPlayer();
+        }
+
+        // --- 5. Modal & Form Logic ---
+        function showModal(title, content) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerHTML = content;
             const modal = document.getElementById('custom-modal');
             const box = document.getElementById('modal-content-box');
             
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-header').style.backgroundColor = headerBgColor;
-            document.getElementById('modal-header').style.color = headerTextColor;
-            document.getElementById('modal-body').innerHTML = contentHTML;
-            
             modal.classList.remove('hide');
-            // Small delay for CSS transition to kick in
             setTimeout(() => {
                 box.classList.remove('scale-95', 'opacity-0');
                 box.classList.add('scale-100', 'opacity-100');
@@ -661,250 +768,59 @@
         function closeModal() {
             const modal = document.getElementById('custom-modal');
             const box = document.getElementById('modal-content-box');
-            
             box.classList.remove('scale-100', 'opacity-100');
             box.classList.add('scale-95', 'opacity-0');
-            
-            setTimeout(() => {
-                modal.classList.add('hide');
-            }, 300); // match transition duration
+            setTimeout(() => modal.classList.add('hide'), 300);
         }
 
-        // Interactive Team Roster Logic
-        function openTeamModal(teamName, emoji, color, captain, roster) {
-            const rosterList = roster.map(player => `<li class="py-2 border-b-2 border-gray-100 font-bold text-gray-700">${player}</li>`).join('');
-            
+        function showTeamModal(team) {
+            const roster = state.teams[team].map(p => `<li class="py-2 border-b border-slate-100 last:border-0">${p}</li>`).join('');
             const html = `
-                <div class="text-center mb-6">
-                    <div class="text-6xl mb-2">${emoji}</div>
-                    <div class="inline-block bg-black text-white px-4 py-1 rounded-md font-bold uppercase text-sm mt-2">Season 4 Squad</div>
-                </div>
-                <div class="bg-gray-100 p-4 rounded-xl border-4 border-black mb-6">
-                    <p class="text-sm font-bold text-gray-500 uppercase mb-1">Captain (C)</p>
-                    <p class="text-2xl font-black">${captain} 👑</p>
-                </div>
-                <h4 class="font-black text-xl mb-3 uppercase border-b-4 border-black pb-2">Full Roster</h4>
-                <ul class="max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-                    ${rosterList}
-                </ul>
+                <h4 class="font-bold text-slate-900 text-sm mb-2 uppercase tracking-wider">Current Squad</h4>
+                <ul class="text-sm text-slate-700">${roster || '<li>No players drafted yet.</li>'}</ul>
             `;
-            
-            showModal(`${teamName} Roster`, html, color, '#000');
+            showModal(`${team} Roster`, html);
         }
 
-        // Form Submission Simulations
-        function submitToGoogleSheets(event) {
-            event.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const originalText = btn.innerText;
-            
-            // Simulating network request UX
-            btn.innerText = "Syncing to Sheets...";
-            btn.classList.add('opacity-75');
-            btn.disabled = true;
-
-            setTimeout(() => {
-                event.target.reset();
-                btn.innerText = originalText;
-                btn.classList.remove('opacity-75');
-                btn.disabled = false;
-                
-                const successMsg = `
-                    <div class="text-center">
-                        <div class="text-6xl mb-4">✅</div>
-                        <p class="font-bold text-lg">Your data has been securely synced to the DPL Central Google Sheets database.</p>
-                        <p class="mt-4 text-sm font-mono text-gray-500">A management rep will contact you before the draft.</p>
-                    </div>
-                `;
-                showModal("Registration Successful! 🎉", successMsg, '#ccff00', '#000');
-            }, 1500);
+        function handleFormSubmit(e, msg) {
+            e.preventDefault();
+            e.target.reset();
+            showModal("System Notice", `<div class="text-center py-4"><span class="text-3xl mb-2 block">✅</span>${msg}</div>`);
         }
 
-        function handleLogin(event, type) {
-            event.preventDefault();
-            event.target.reset();
-            const msg = `
-                <div class="text-center">
-                    <div class="text-6xl mb-4">🔒</div>
-                    <p class="font-bold text-lg text-red-600">Authentication Service Offline</p>
-                    <p class="mt-4 text-sm font-mono text-gray-600">This is a frontend demonstration. The backend server and Google Apps Script are not currently connected.</p>
-                </div>
-            `;
-            showModal(`${type} Access Denied`, msg, '#000', '#fff');
-        }
+        // --- 6. Live Score Simulation ---
+        let runs = 112;
+        setInterval(() => {
+            if (document.getElementById('view-live').classList.contains('active-view')) {
+                runs += Math.floor(Math.random() * 3); // random 0,1,2 runs
+                document.getElementById('live-score-1').innerHTML = `${runs}<span class="text-3xl md:text-4xl text-emerald-200">/4</span>`;
+            }
+        }, 5000);
 
-        // --- Countdown Timer Logic ---
-        function updateCountdown() {
-            // Mock future date (14 days from load)
-            const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + 14);
-            targetDate.setHours(targetDate.getHours() + 8);
-            
-            const now = new Date().getTime();
-            const distance = targetDate.getTime() - now;
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = days.toString().padStart(2, '0');
-            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
-            document.getElementById("mins").innerText = minutes.toString().padStart(2, '0');
-            document.getElementById("secs").innerText = seconds.toString().padStart(2, '0');
-        }
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
-        // --- Scroll Animation Logic (Intersection Observer) ---
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.15
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target); // Only animate once
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
-        });
-
-        // --- Chart.js Implementations ---
-        Chart.defaults.font.family = "'Outfit', sans-serif";
-        Chart.defaults.color = '#000';
-        Chart.defaults.font.weight = 'bold';
-
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // 1. Roles Chart (Doughnut)
-            const ctxRoles = document.getElementById('rolesChart').getContext('2d');
-            new Chart(ctxRoles, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Batsmen', 'Pace Bowlers', 'Spinners', 'All-Rounders', 'Keepers'],
-                    datasets: [{
-                        data: [40, 20, 15, 15, 10],
-                        backgroundColor: [
-                            '#ccff00', // Lime
-                            '#00e5ff', // Cyan
-                            '#3b82f6', // Blue
-                            '#ff00ff', // Pink
-                            '#000000'  // Black
-                        ],
-                        borderWidth: 4,
-                        borderColor: '#fff',
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true,
-                                pointStyle: 'rectRounded',
-                                font: { size: 14 }
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: '#000',
-                            titleFont: { size: 16, family: "'Outfit', sans-serif" },
-                            bodyFont: { size: 14, family: "'Outfit', sans-serif" },
-                            padding: 16,
-                            cornerRadius: 12,
-                            displayColors: true,
-                            boxPadding: 6
-                        }
-                    },
-                    cutout: '60%'
-                }
-            });
-
-            // 2. History Chart (Line/Area mix)
-            const ctxHistory = document.getElementById('historyChart').getContext('2d');
-            new Chart(ctxHistory, {
-                type: 'line',
+        // --- 7. Chart.js Initialization ---
+        function renderChart() {
+            const ctx = document.getElementById('statsChart').getContext('2d');
+            Chart.defaults.font.family = "'Outfit', sans-serif";
+            new Chart(ctx, {
+                type: 'bar',
                 data: {
                     labels: ['Season 1', 'Season 2', 'Season 3', 'Season 4'],
                     datasets: [
-                        {
-                            label: 'Total Sixes',
-                            data: [120, 155, 210, 285],
-                            borderColor: '#ff00ff',
-                            backgroundColor: 'rgba(255, 0, 255, 0.2)',
-                            borderWidth: 5,
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#ff00ff',
-                            pointBorderWidth: 4,
-                            pointRadius: 6,
-                            pointHoverRadius: 10,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Total Fours',
-                            data: [340, 410, 480, 560],
-                            borderColor: '#00e5ff',
-                            backgroundColor: 'transparent',
-                            borderWidth: 5,
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#00e5ff',
-                            pointBorderWidth: 4,
-                            pointRadius: 6,
-                            pointHoverRadius: 10,
-                            tension: 0.4
-                        }
+                        { label: 'Total Runs', data: [1200, 1550, 2100, 2850], backgroundColor: '#2563eb', borderRadius: 4 },
+                        { label: 'Total Wickets', data: [140, 170, 190, 220], backgroundColor: '#10b981', borderRadius: 4 }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
+                    responsive: true, maintainAspectRatio: false,
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: '#e2e8f0', borderColor: '#000', borderWidth: 4 },
-                            ticks: { font: { weight: 'black', size: 14 } }
-                        },
-                        x: {
-                            grid: { display: false, borderColor: '#000', borderWidth: 4 },
-                            ticks: { font: { weight: 'black', size: 14 } }
-                        }
+                        y: { grid: { color: '#f1f5f9' }, border: { display: false } },
+                        x: { grid: { display: false }, border: { display: false } }
                     },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                usePointStyle: true,
-                                pointStyle: 'rectRounded',
-                                padding: 20,
-                                font: { size: 16, weight: '900' }
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: '#000',
-                            padding: 16,
-                            cornerRadius: 12,
-                            titleFont: { size: 16 },
-                            bodyFont: { size: 14 }
-                        }
-                    }
+                    plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } } }
                 }
             });
-        });
+            state.chartInitialized = true;
+        }
     </script>
 </body>
 </html>
